@@ -13,10 +13,10 @@ public class TileMap {
     double y;
     
     //bounds
-    private int xmin;
-    private int ymin;
-    private int xmax;
-    private int ymax;
+    private int xMin;
+    private int yMin;
+    private int xMax;
+    private int yMax;
     
     //tutorial author invention to smoothen scrool
     private double tween;
@@ -85,6 +85,11 @@ public class TileMap {
             width = numCols * tileSize;
             height = numRows * tileSize;
             
+            xMin = GamePanel.WIDTH - width;
+            xMax = 0;
+            yMin = GamePanel.HEIGHT - height;
+            yMax = 0;
+            
             //delimiter
             String delims = "\\s+";
             //read map file
@@ -131,19 +136,22 @@ public class TileMap {
         
         colOffset = (int) - this.x / tileSize;
         rowOffset = (int) - this.y / tileSize;
+    } 
+    public void setTween (double t) {
+        this.tween = t;
     }
     private void fixBounds() {
-        if (x < xmin) {
-            x = xmin;
+        if (x < xMin) {
+            x = xMin;
         }
-        if (y < ymin) {
-            y = ymin;
+        if (y < yMin) {
+            y = yMin;
         }
-        if (x > xmax) {
-            x = xmax;
+        if (x > xMax) {
+            x = xMax;
         }
-        if (y > ymax) {
-            y = ymax;
+        if (y > yMax) {
+            y = yMax;
         }
     }
     public void draw(Graphics2D g) {
