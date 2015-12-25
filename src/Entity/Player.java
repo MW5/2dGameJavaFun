@@ -21,7 +21,7 @@ public class Player extends MapObject {
     private boolean firing;
     private int fireCost;
     private int fireBallDamage;
-    //private ArrayList<FireBall> fireBalls;
+    private ArrayList<FireBall> fireBalls;
     
     //scratch
     private boolean scratching;
@@ -67,7 +67,7 @@ public class Player extends MapObject {
         fire = maxFire = 2500;
         fireCost = 200;
         fireBallDamage = 5;
-        //fireBalls = new ArrayList<FireBall>();
+        fireBalls = new ArrayList<FireBall>();
         
         scratchDamage = 8;
         scratchRange = 40;
@@ -75,7 +75,7 @@ public class Player extends MapObject {
         //load sprites
         try {
             BufferedImage spriteSheet = ImageIO.read(
-                    getClass().getResourceAsStream("/Sprites/Player/playersprites.gif"));
+                    getClass().getResourceAsStream("/Sprites/Player/player_sprites.png"));
             sprites = new ArrayList<BufferedImage[]>();
             //MY UPGRADE, START HERE IF STH DOESN`T WORK
             for (int i=0; i <numFrames.length; i++) {
@@ -85,7 +85,7 @@ public class Player extends MapObject {
                     if (i!=6) {
                         bi[j] = spriteSheet.getSubimage(j*width, i*height, width, height);
                     } else {
-                        bi[j] = spriteSheet.getSubimage(j*width*2, i*height, width, height);
+                        bi[j] = spriteSheet.getSubimage(j*width*2, i*height, width*2, height);
                     }
                 }
                 sprites.add(bi);
@@ -186,6 +186,18 @@ public class Player extends MapObject {
         getNextPosition();
         checkTileMapCollision();
         setPosition(xTemp, yTemp);
+        
+        //check if attacks has stopped
+        if (currentAction == SCRATCHING) {
+            if (animation.hasPlayedOnce()) {
+                scratching = false;
+            }
+        }
+        if (currentAction == FIREBALL) {
+            if (animation.hasPlayedOnce()) {
+                firing = false;
+            }
+        }
         
         //set animation
         if (scratching) {

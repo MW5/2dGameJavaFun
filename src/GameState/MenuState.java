@@ -7,8 +7,8 @@ import java.awt.event.KeyEvent;
 //prepares menustate
 public class MenuState extends GameState {
     
+    private Background bgClouds;
     private Background bg;
-    private Background bgStars;
     
     private int currentChoice = 0;
     private String[] options = {
@@ -26,10 +26,10 @@ public class MenuState extends GameState {
         
         try {
             //prepares background object for menu
-            bg = new Background("/Backgrounds/menubg.png", 1);
-            bg.setVector(-0.1, 0);
+            bg = new Background ("/Backgrounds/menu_bg.png");
             
-            bgStars = new Background ("/Backgrounds/stars.png");
+            bgClouds = new Background("/Backgrounds/clouds.png", 1);
+            bgClouds.setVector(-0.1, 0);
             
             titleColor = new Color(172, 0 ,191);
             titleFont = new Font("Century Gothic", Font.PLAIN, 28);
@@ -46,13 +46,13 @@ public class MenuState extends GameState {
     };
     
     public void update() {
-        bg.update();
+        bgClouds.update();
     };
     
     public void draw(Graphics2D g) {
         //draw bg
-        bgStars.draw(g);
         bg.draw(g);
+        bgClouds.draw(g);
         
         //draw title
         g.setColor(titleColor);
