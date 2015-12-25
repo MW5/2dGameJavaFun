@@ -11,17 +11,17 @@ public class Player extends MapObject {
     //player stuff
     private int health;
     private int maxHealth;
-    private int fire;
-    private int maxFire;
+    private int projectile;
+    private int ammo;
     private boolean dead;
     private boolean flinching;
     private long flinchTimer;
     
-    //fireball
+    //projectile
     private boolean firing;
-    private int fireCost;
-    private int fireBallDamage;
-    private ArrayList<FireBall> fireBalls;
+    private int ammoCost;
+    private int projectileDamage;
+    private ArrayList<Projectile> projectiles;
     
     //scratch
     private boolean scratching;
@@ -43,7 +43,7 @@ public class Player extends MapObject {
     private static final int JUMPING = 2;
     private static final int FALLING = 3;
     private static final int GLIDING = 4;
-    private static final int FIREBALL = 5;
+    private static final int PROJECTILE = 5;
     private static final int SCRATCHING = 6;
     
     public Player(TileMap tm) {
@@ -64,10 +64,10 @@ public class Player extends MapObject {
         facingRight = true;
         
         health = maxHealth = 5;
-        fire = maxFire = 2500;
-        fireCost = 200;
-        fireBallDamage = 5;
-        fireBalls = new ArrayList<FireBall>();
+        projectile = ammo = 2500;
+        ammoCost = 200;
+        projectileDamage = 5;
+        projectiles = new ArrayList<Projectile>();
         
         scratchDamage = 8;
         scratchRange = 40;
@@ -108,11 +108,11 @@ public class Player extends MapObject {
     public int getMaxHealth() {
         return maxHealth;
     }
-    public int getFire() {
-        return fire;
+    public int getProjectile() {
+        return projectile;
     }
-    public int getMaxFire() {
-        return maxFire;
+    public int getAmmo() {
+        return ammo;
     }
     
     public void setFiring() {
@@ -151,7 +151,7 @@ public class Player extends MapObject {
         }
         
         //cannot move while attacking, except in air
-        if ((currentAction == SCRATCHING || currentAction == FIREBALL) &&
+        if ((currentAction == SCRATCHING || currentAction == PROJECTILE) &&
                 (!jumping || falling)) {
             dx = 0;
         }
@@ -193,9 +193,32 @@ public class Player extends MapObject {
                 scratching = false;
             }
         }
-        if (currentAction == FIREBALL) {
+        if (currentAction == PROJECTILE) {
             if (animation.hasPlayedOnce()) {
                 firing = false;
+            }
+        }
+        
+        //projectile attack
+        projectile += 1;
+        if (projectile > ammo) {
+            projectile = ammo;
+        }
+        if(firing && currentAction != PROJECTILE) {
+            if (projectile > ammoCost) {
+                projectile -= ammoCost;
+                Projectile fb = new Projectile(tileMap, facingRight);
+                fb.setPosition(x, y);
+                projectiles.add(fb);
+            }
+        }
+        
+        //update projectiles
+        for (int i=0; i<projectiles.size(); i++) {
+            projectiles.get(i).update();
+            if (projectiles.get(i).shouldRemove()){
+                projectiles.remove(i);
+                i--;
             }
         }
         
@@ -209,9 +232,9 @@ public class Player extends MapObject {
                 
             }
         } else if (firing) {
-            if (currentAction != FIREBALL) {
-                currentAction = FIREBALL;
-                animation.setFrames(sprites.get(FIREBALL));
+            if (currentAction != PROJECTILE) {
+                currentAction = PROJECTILE;
+                animation.setFrames(sprites.get(PROJECTILE));
                 animation.setDelay(100);
                 width = 30;
             }
@@ -256,7 +279,7 @@ public class Player extends MapObject {
         animation.update();
         
         //set direction
-        if (currentAction != SCRATCHING && currentAction != FIREBALL) {
+        if (currentAction != SCRATCHING && currentAction != PROJECTILE) {
             if (right) {
                 facingRight = true;
             } 
@@ -268,6 +291,13 @@ public class Player extends MapObject {
     
     public void draw(Graphics2D g) {
         setMapPosition();
+        
+        //draw projectiles
+        for (int i=0; i<projectiles.size(); i++) {
+            projectiles.get(i).draw(g);
+        }
+        
+        
         //draw player
         if (flinching) {
             long elapsed = (System.nanoTime() - flinchTimer) / 1000000;

@@ -5,18 +5,18 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-public class FireBall extends MapObject {
+public class Projectile extends MapObject {
     
     private boolean hit;
     private boolean remove;
     private BufferedImage[] sprites;
     //num of regular sprites
-    private int numOfSprites = 4;
+    private int numOfSprites = 1;
     private BufferedImage[] hitSprites;
     //num of hitSprites
     private int numOfHitSprites = 3;
     
-    public FireBall(TileMap tm, boolean right) {
+    public Projectile(TileMap tm, boolean right) {
         super(tm);
         moveSpeed = 3.8;
         if (right) {
@@ -34,7 +34,7 @@ public class FireBall extends MapObject {
         try {
             //load file
             BufferedImage spriteSheet = ImageIO.read(
-                getClass().getResourceAsStream("/Sprites/Player/fireball.gif"));
+                getClass().getResourceAsStream("/Sprites/Player/projectile.png"));
             //get array with sprites subimages
             sprites = new BufferedImage[numOfSprites];
             for (int i=0; i<sprites.length; i++) {
@@ -82,6 +82,10 @@ public class FireBall extends MapObject {
     public void update() {
         checkTileMapCollision();
         setPosition(xTemp, yTemp);
+        
+        if (dx == 0 && !hit) {
+            setHit();
+        }
         
         animation.update();
         if (hit && animation.hasPlayedOnce()) {
