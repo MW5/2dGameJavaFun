@@ -109,11 +109,11 @@ public class TileMap {
     public int getTileSize () {
         return tileSize;
     }
-    public int getX () {
-        return (int) x;
+    public double getX () {
+        return x;
     }
-    public int getY () {
-        return (int) y;
+    public double getY () {
+        return y;
     }
     public int getWidth() {
         return width;
@@ -128,10 +128,8 @@ public class TileMap {
         return tiles[r][c].getType();
     }
     public void setPosition (double x, double y) {
-        //this.x += (x - this.x) * tween;
-        //this.y += (y - this.y) * tween;
-        this.x = x;
-        this.y = y;
+        this.x += (x - this.x) * tween;
+        this.y += (y - this.y) * tween;
         fixBounds();
         
         colOffset = (int) - this.x / tileSize;

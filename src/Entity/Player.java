@@ -77,7 +77,6 @@ public class Player extends MapObject {
             BufferedImage spriteSheet = ImageIO.read(
                     getClass().getResourceAsStream("/Sprites/Player/player_sprites.png"));
             sprites = new ArrayList<BufferedImage[]>();
-            //MY UPGRADE, START HERE IF STH DOESN`T WORK
             for (int i=0; i <numFrames.length; i++) {
                 BufferedImage[] bi = new BufferedImage[numFrames[i]];
                 for (int j=0; j<numFrames[i]; j++) {
@@ -207,9 +206,9 @@ public class Player extends MapObject {
         if(firing && currentAction != PROJECTILE) {
             if (projectile > ammoCost) {
                 projectile -= ammoCost;
-                Projectile fb = new Projectile(tileMap, facingRight);
-                fb.setPosition(x, y);
-                projectiles.add(fb);
+                Projectile pr = new Projectile(tileMap, facingRight);
+                pr.setPosition(x, y);
+                projectiles.add(pr);
             }
         }
         
