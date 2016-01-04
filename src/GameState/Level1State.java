@@ -1,6 +1,7 @@
 package GameState;
 
 import Entity.*;
+import Entity.Enemies.*;
 import Main.GamePanel;
 import TileMap.Background;
 import TileMap.TileMap;
@@ -33,12 +34,24 @@ public class Level1State extends GameState {
         
         player = new Player(tileMap);
         player.setPosition(50, 195);
+        
+        enemies = new ArrayList<Enemy>();
+        DickButt dB;
+        dB = new DickButt(tileMap);
+        dB.setPosition(180,195);
+        enemies.add(dB);
+        
     }
     
     public void update() {
         //update player
         player.update();
         tileMap.setPosition(GamePanel.WIDTH/2-player.getX(), GamePanel.HEIGHT/2-player.getY());
+        
+        //update all enemies
+        for (int i=0; i<enemies.size(); i++) {
+            enemies.get(i).update();
+        }
         
         //update background
         bg.setPosition(tileMap.getX()/2, tileMap.getY());
@@ -51,6 +64,10 @@ public class Level1State extends GameState {
         tileMap.draw(g);
         //draw player
         player.draw(g);
+        //draw enemies
+        for (int i=0;i<enemies.size();i++) {
+            enemies.get(i).draw(g);
+        }
     }
     
     public void keyPressed(int k) {

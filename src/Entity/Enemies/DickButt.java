@@ -49,7 +49,20 @@ public class DickButt extends Enemy {
     }
     
     private void getNextPosition() {
-        
+        if (left) {
+            dx -= moveSpeed;
+            if (dx < -maxSpeed) {
+                dx = -maxSpeed;
+            }
+        } else if (right) {
+            dx += moveSpeed;
+            if (dx > maxSpeed) {
+                dx = maxSpeed;
+            }
+        }
+        if (falling) {
+            dy += fallSpeed;
+        }
     }
     
     public void update() {
@@ -57,6 +70,23 @@ public class DickButt extends Enemy {
         getNextPosition();
         checkTileMapCollision();
         setPosition(xTemp, yTemp);
+        
+        //check flinching
+        if (flinching) {
+            long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+            if (elapsed > 400) {
+                flinching = false;
+            }
+        }
+        
+        //if hits a wall turn around
+        if (right && dx == 0) {
+            right = false;
+            left = true;
+        } else if (left && dx == 0) {
+            left = false;
+            right = true;
+        }
     }
     
     public void draw(Graphics2D g) {
