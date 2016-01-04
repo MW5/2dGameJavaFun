@@ -18,6 +18,8 @@ public class Projectile extends MapObject {
     
     public Projectile(TileMap tm, boolean right) {
         super(tm);
+        
+        facingRight = right;
         moveSpeed = 3.8;
         if (right) {
             dx = moveSpeed;
@@ -95,20 +97,7 @@ public class Projectile extends MapObject {
     
     public void draw(Graphics2D g) {
         setMapPosition();
-        if (facingRight) {
-            g.drawImage(animation.getImage(),
-                    (int)(x+xMap-width/2),
-                    (int)(y+yMap-height/2),
-                    null);
-        }
-        if (!facingRight) {
-            g.drawImage(animation.getImage(),
-                    (int)(x+xMap-width/2+width),
-                    (int)(y+yMap-height/2),
-                    -width,
-                    height,
-                    null);
-        }
+        super.draw(g);
         
     }
 }

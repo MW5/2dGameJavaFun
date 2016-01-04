@@ -11,8 +11,8 @@ public class Player extends MapObject {
     //player stuff
     private int health;
     private int maxHealth;
-    private int projectile;
-    private int ammo;
+    private int ammoLeft;
+    private int maxAmmo;
     private boolean dead;
     private boolean flinching;
     private long flinchTimer;
@@ -35,7 +35,7 @@ public class Player extends MapObject {
     private ArrayList<BufferedImage[]> sprites;
     //number of animation frames for each of the animation actions
     private final int[] numFrames = {
-        2, 8, 1, 2, 4, 2, 5
+        2, 8, 1, 2, 4, 2, 2, 5 
     };
     //animation actions
     private static final int IDLE = 0;
@@ -44,7 +44,8 @@ public class Player extends MapObject {
     private static final int FALLING = 3;
     private static final int GLIDING = 4;
     private static final int PROJECTILE = 5;
-    private static final int SCRATCHING = 6;
+    private static final int NOAMMO = 6;
+    private static final int SCRATCHING = 7;
     
     public Player(TileMap tm) {
         super(tm);
@@ -64,7 +65,7 @@ public class Player extends MapObject {
         facingRight = true;
         
         health = maxHealth = 5;
-        projectile = ammo = 2500;
+        ammoLeft = maxAmmo = 2500;
         ammoCost = 200;
         projectileDamage = 5;
         projectiles = new ArrayList<Projectile>();
@@ -81,7 +82,7 @@ public class Player extends MapObject {
                 BufferedImage[] bi = new BufferedImage[numFrames[i]];
                 for (int j=0; j<numFrames[i]; j++) {
                     //the last animation has different size
-                    if (i!=6) {
+                    if (i!=numFrames.length-1) {
                         bi[j] = spriteSheet.getSubimage(j*width, i*height, width, height);
                     } else {
                         bi[j] = spriteSheet.getSubimage(j*width*2, i*height, width*2, height);
@@ -108,10 +109,10 @@ public class Player extends MapObject {
         return maxHealth;
     }
     public int getProjectile() {
-        return projectile;
+        return ammoLeft;
     }
     public int getAmmo() {
-        return ammo;
+        return maxAmmo;
     }
     
     public void setFiring() {
@@ -199,13 +200,13 @@ public class Player extends MapObject {
         }
         
         //projectile attack
-        projectile += 1;
-        if (projectile > ammo) {
-            projectile = ammo;
+        ammoLeft += 1;
+        if (ammoLeft > maxAmmo) {
+            ammoLeft = maxAmmo;
         }
         if(firing && currentAction != PROJECTILE) {
-            if (projectile > ammoCost) {
-                projectile -= ammoCost;
+            if (ammoLeft > ammoCost) {
+                ammoLeft -= ammoCost;
                 Projectile pr = new Projectile(tileMap, facingRight);
                 pr.setPosition(x, y);
                 projectiles.add(pr);
@@ -228,12 +229,15 @@ public class Player extends MapObject {
                 animation.setFrames(sprites.get(SCRATCHING));
                 animation.setDelay(50);
                 width = 60;
-                
             }
         } else if (firing) {
             if (currentAction != PROJECTILE) {
                 currentAction = PROJECTILE;
-                animation.setFrames(sprites.get(PROJECTILE));
+                if (ammoLeft >= ammoCost) {
+                    animation.setFrames(sprites.get(PROJECTILE));
+                } else {
+                    animation.setFrames(sprites.get(NOAMMO));
+                }
                 animation.setDelay(100);
                 width = 30;
             }
@@ -304,20 +308,8 @@ public class Player extends MapObject {
                 return;
             }
         }
-        if (facingRight) {
-            g.drawImage(animation.getImage(),
-                    (int)(x+xMap-width/2),
-                    (int)(y+yMap-height/2),
-                    null);
-        }
-        if (!facingRight) {
-            g.drawImage(animation.getImage(),
-                    (int)(x+xMap-width/2+width),
-                    (int)(y+yMap-height/2),
-                    -width,
-                    height,
-                    null);
-        }
+        
+        super.draw(g);
     }
     
 }

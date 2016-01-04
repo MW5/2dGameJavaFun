@@ -3,6 +3,7 @@ package Entity;
 import Main.GamePanel;
 import TileMap.Tile;
 import TileMap.TileMap;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public abstract class MapObject {
@@ -212,12 +213,20 @@ public abstract class MapObject {
         jumping = b;
     }
     
-    //to check if drawing an object is necessary (if it`s on the screen)
-    public boolean notOnScreen() {
-                //beyond left side of the screen
-        return  x + xMap + width < 0 ||
-                x + xMap - width > GamePanel.WIDTH ||
-                y + yMap + height < 0 ||
-                y + yMap - height > GamePanel.HEIGHT;
+    public void draw(Graphics2D g) {
+        if (facingRight) {
+            g.drawImage(animation.getImage(),
+                    (int)(x+xMap-width/2),
+                    (int)(y+yMap-height/2),
+                    null);
+        } else {
+            g.drawImage(animation.getImage(),
+                    (int)(x+xMap-width/2+width),
+                    (int)(y+yMap-height/2),
+                    -width,
+                    height,
+                    null);
+        }
     }
+
 }
