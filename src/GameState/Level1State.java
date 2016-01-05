@@ -15,8 +15,10 @@ public class Level1State extends GameState {
     private Background bg;
     
     private Player player;
+    private Hud hud;
     
     private ArrayList<Enemy> enemies;
+    
     
     public Level1State (GameStateManager gsm) {
         this.gsm = gsm;
@@ -36,10 +38,13 @@ public class Level1State extends GameState {
         player.setPosition(50, 195);
         
         enemies = new ArrayList<Enemy>();
+        
         DickButt dB;
         dB = new DickButt(tileMap);
         dB.setPosition(180,195);
         enemies.add(dB);
+        
+        hud = new Hud(player);
         
     }
     
@@ -68,6 +73,8 @@ public class Level1State extends GameState {
         for (int i=0;i<enemies.size();i++) {
             enemies.get(i).draw(g);
         }
+        //draw hud
+        hud.draw(g);
     }
     
     public void keyPressed(int k) {

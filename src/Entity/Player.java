@@ -11,7 +11,7 @@ public class Player extends MapObject {
     //player stuff
     private int health;
     private int maxHealth;
-    private int ammoLeft;
+    private float ammoLeft;
     private int maxAmmo;
     private boolean dead;
     private boolean flinching;
@@ -65,8 +65,8 @@ public class Player extends MapObject {
         facingRight = true;
         
         health = maxHealth = 5;
-        ammoLeft = maxAmmo = 2500;
-        ammoCost = 200;
+        ammoLeft = maxAmmo = 5;
+        ammoCost = 1;
         projectileDamage = 5;
         projectiles = new ArrayList<Projectile>();
         
@@ -108,10 +108,10 @@ public class Player extends MapObject {
     public int getMaxHealth() {
         return maxHealth;
     }
-    public int getProjectile() {
+    public float getAmmoLeft() {
         return ammoLeft;
     }
-    public int getAmmo() {
+    public int getMaxAmmo() {
         return maxAmmo;
     }
     
@@ -200,7 +200,8 @@ public class Player extends MapObject {
         }
         
         //projectile attack
-        ammoLeft += 1;
+            //regain ammo
+        ammoLeft += 0.005;
         if (ammoLeft > maxAmmo) {
             ammoLeft = maxAmmo;
         }

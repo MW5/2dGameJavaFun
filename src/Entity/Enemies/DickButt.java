@@ -46,6 +46,7 @@ public class DickButt extends Enemy {
         animation.setDelay(300);
         
         right = true;
+        facingRight = true;
     }
     
     private void getNextPosition() {
@@ -83,10 +84,14 @@ public class DickButt extends Enemy {
         if (right && dx == 0) {
             right = false;
             left = true;
+            facingRight = false;
         } else if (left && dx == 0) {
             left = false;
             right = true;
+            facingRight = true;
         }
+        
+        animation.update();
     }
     
     public void draw(Graphics2D g) {
