@@ -23,7 +23,7 @@ public class DickButt extends Enemy {
         cWidth = 20;
         cHeight = 20;
         
-        health = maxHealth = 2;
+        health = maxHealth = 20;
         damage = 1;
         
         //load sprites
@@ -71,7 +71,7 @@ public class DickButt extends Enemy {
         getNextPosition();
         checkTileMapCollision();
         setPosition(xTemp, yTemp);
-        
+
         //check flinching
         if (flinching) {
             long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
@@ -79,7 +79,7 @@ public class DickButt extends Enemy {
                 flinching = false;
             }
         }
-        
+
         //if hits a wall turn around
         if (right && dx == 0) {
             right = false;
@@ -90,7 +90,7 @@ public class DickButt extends Enemy {
             right = true;
             facingRight = true;
         }
-        
+
         animation.update();
     }
     

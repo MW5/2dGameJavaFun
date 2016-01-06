@@ -115,6 +115,39 @@ public class Player extends MapObject {
         return maxAmmo;
     }
     
+    public void checkAttack(ArrayList<Enemy> el) {
+        //scratch
+        for (Enemy e : el) {
+            if (scratching) {
+                if (facingRight) {
+                        
+                        //if the enemy is to the right of us
+                        if (e.getX() > x &&
+                                e.getX() < x+scratchRange &&
+                                e.getY() > y-height/2 &&
+                                e.getY() < y+height/2) {
+                            e.hit(scratchDamage);
+                    }
+                } else {
+                        if (e.getX() < x &&
+                                e.getX() > x-scratchRange &&
+                                e.getY() > y-height/2 &&
+                                e.getY() < y+height/2) {
+                            e.hit(scratchDamage);
+                        }
+                }
+            }
+
+            //projectile
+            for (Projectile p : projectiles) {
+                if (p.intersects(e)) {
+                    e.hit(projectileDamage);
+                    p.setHit();
+                }
+            }
+        }
+    }
+    
     public void setFiring() {
         firing = true;
     }
@@ -199,15 +232,15 @@ public class Player extends MapObject {
             }
         }
         
-        //projectile attack
-            //regain ammo
+        //replenish ammo
         ammoLeft += 0.005;
+        //projectile attack
         if (ammoLeft > maxAmmo) {
             ammoLeft = maxAmmo;
         }
         if(firing && currentAction != PROJECTILE) {
-            if (ammoLeft > ammoCost) {
-                ammoLeft -= ammoCost;
+            if (ammoLeft >= ammoCost) {
+                
                 Projectile pr = new Projectile(tileMap, facingRight);
                 pr.setPosition(x, y);
                 projectiles.add(pr);
@@ -235,8 +268,10 @@ public class Player extends MapObject {
             if (currentAction != PROJECTILE) {
                 currentAction = PROJECTILE;
                 if (ammoLeft >= ammoCost) {
+                    ammoLeft -= ammoCost;
                     animation.setFrames(sprites.get(PROJECTILE));
                 } else {
+                    
                     animation.setFrames(sprites.get(NOAMMO));
                 }
                 animation.setDelay(100);

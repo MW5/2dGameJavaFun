@@ -30,7 +30,7 @@ public class Projectile extends MapObject {
         width = 30;
         height = 30;
         cWidth = 14;
-        cWidth = 14;
+        cHeight = 14;
         
         //load sprites
         try {
