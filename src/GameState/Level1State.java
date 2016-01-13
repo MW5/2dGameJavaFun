@@ -8,6 +8,7 @@ import TileMap.TileMap;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.awt.Point;
 
 public class Level1State extends GameState {
     
@@ -18,6 +19,7 @@ public class Level1State extends GameState {
     private Hud hud;
     
     private ArrayList<Enemy> enemies;
+    private ArrayList<EnemyDeath> enemyDeaths;
     
     
     public Level1State (GameStateManager gsm) {
@@ -37,15 +39,32 @@ public class Level1State extends GameState {
         player = new Player(tileMap);
         player.setPosition(50, 195);
         
-        enemies = new ArrayList<Enemy>();
+        enemyDeaths = new ArrayList<EnemyDeath>();
         
-        DickButt dB;
-        dB = new DickButt(tileMap);
-        dB.setPosition(180,195);
-        enemies.add(dB);
+        populateEnemies();
         
         hud = new Hud(player);
         
+    }
+    
+    public void populateEnemies() {
+        enemies = new ArrayList<Enemy>();
+        
+        Point[] points = new Point[] {
+            new Point(180,195),
+            new Point(240, 195),
+            new Point(860, 200),
+            new Point(1525, 200),
+            new Point(1680, 200),
+            new Point(1800, 200)
+        };
+        
+        for (int i = 0; i<points.length; i++) {
+            DickButt dB;
+            dB = new DickButt(tileMap);
+            dB.setPosition(points[i].x, points[i].y);
+            enemies.add(dB);
+        }
     }
     
     public void update() {
@@ -55,11 +74,25 @@ public class Level1State extends GameState {
         
         //update all enemies
         for (int i=0; i<enemies.size(); i++) {
-                enemies.get(i).update();
-                if (enemies.get(i).isDead()) {
-                    enemies.remove(i);
+                Enemy e = enemies.get(i);
+                e.update();
+                if (e.isDead()) {
+                    enemyDeaths.add(new EnemyDeath(e.getX(), e.getY()));
+                    enemies.remove(e);
                     i--;
                 }
+        }
+        
+        //update enemy deaths
+        for (int i=0; i<enemyDeaths.size(); i++) {
+            EnemyDeath e = enemyDeaths.get(i);
+            if (!e.shouldRemove()) {
+                e.update();
+            } else {
+               enemyDeaths.remove(e);
+               i--;
+            }
+            
         }
         
         //attack enemies
@@ -79,6 +112,11 @@ public class Level1State extends GameState {
         //draw enemies
         for (int i=0;i<enemies.size();i++) {
             enemies.get(i).draw(g);
+        }
+        //draw enemy deaths
+        for (EnemyDeath e : enemyDeaths) {
+            e.setMapPosition((int)tileMap.getX(), (int)tileMap.getY());
+            e.draw(g);
         }
         //draw hud
         hud.draw(g);

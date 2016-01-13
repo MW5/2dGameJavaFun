@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 public class DickButt extends Enemy {
     
     private BufferedImage[] sprites;
+    private int numOfSprites = 3;
     public DickButt (TileMap tm) {
         super(tm);
         
@@ -31,7 +32,7 @@ public class DickButt extends Enemy {
             BufferedImage spritesheet = ImageIO.read(
                     getClass().getResourceAsStream("/Sprites/Enemies/dickButt.gif"));
             //num of frames
-            sprites = new BufferedImage[3];
+            sprites = new BufferedImage[numOfSprites];
             for (int i=0; i<sprites.length; i++) {
                 sprites[i] = spritesheet.getSubimage(i*width,0,width,height);
             }
